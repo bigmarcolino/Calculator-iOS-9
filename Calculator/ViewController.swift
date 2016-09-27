@@ -10,24 +10,37 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    @IBOutlet weak var display: UILabel!
+    @IBOutlet private weak var display: UILabel!
     
-    var userIsInTheMiddleOfTyping = false
+    @IBOutlet weak var displayDescription: UILabel!
     
-    @IBAction func touchDigit(sender: UIButton) {
+    private var userIsInTheMiddleOfTyping = false
+    
+    private var addedPoint = false
+    
+    @IBAction private func touchDigit(_ sender: UIButton) {
         let digit = sender.currentTitle!
         
         if userIsInTheMiddleOfTyping {
-            let textCurrentlyInDisplay = display.text!
-            display.text = textCurrentlyInDisplay + digit
-        } else {
-            display.text = digit
+            if digit == "." && !addedPoint {
+                let textCurrentlyInDisplay = display.text!
+                display.text = textCurrentlyInDisplay + digit
+                addedPoint = true
+            }
+            else if digit != "." {
+                let textCurrentlyInDisplay = display.text!
+                display.text = textCurrentlyInDisplay + digit
+            }
+            
+            userIsInTheMiddleOfTyping = true
         }
-        
-        userIsInTheMiddleOfTyping = true
+        else if digit != "." {
+            display.text = digit
+            userIsInTheMiddleOfTyping = true
+        }
     }
     
-    var displayValue: Double {
+    private var displayValue: Double {
         get {
             return Double(display.text!)!
         }
@@ -36,12 +49,28 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func performOperation(sender: UIButton) {
-        userIsInTheMiddleOfTyping = false
-        if let mathematicalSymbol = sender.currentTitle {
-            if mathematicalSymbol == "pi" {
-                displayValue = M_PI
-            }
+    private var descriptionValue: Double {
+        get {
+            return Double(displayDescription.text!)!
+        }
+        set {
+            displayDescription.text = String(newValue)
         }
     }
+    
+    private var brain = CalculatorBrain()
+    
+    @IBAction private func performOperation(_ sender: UIButton) {
+        if userIsInTheMiddleOfTyping {
+            brain.setOperand(operand: displayValue)
+            userIsInTheMiddleOfTyping = false
+            addedPoint = false
+        }
+        
+        if let mathematicalSymbol = sender.currentTitle {
+            brain.performOperation(symbol: mathematicalSymbol)
+            displayValue = brain.result
+        }
+    }
+
 }
