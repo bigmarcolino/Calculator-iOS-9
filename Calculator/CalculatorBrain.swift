@@ -13,6 +13,12 @@ class CalculatorBrain {
     
     private var description = ""
     
+    private func reset() {
+        accumulator = 0.0
+        description = ""
+        pending = nil
+    }
+    
     func setOperand(operand: Double) {
         accumulator = operand
     }
@@ -21,6 +27,7 @@ class CalculatorBrain {
         "π" : Operation.Constant(M_PI),
         "e" : Operation.Constant(M_E),
         "±" : Operation.UnaryOperation({ -$0 }),
+        "C" : Operation.ResetOperation,
         "√" : Operation.UnaryOperation(sqrt),
         "cos" : Operation.UnaryOperation(cos),
         "sin" : Operation.UnaryOperation(sin),
@@ -37,6 +44,7 @@ class CalculatorBrain {
         case Constant(Double)
         case UnaryOperation((Double) -> Double)
         case BinaryOperation((Double, Double) -> Double)
+        case ResetOperation
         case Equals
     }
     
@@ -48,10 +56,23 @@ class CalculatorBrain {
             case .UnaryOperation(let function):
                 accumulator = function(accumulator)
             case .BinaryOperation(let function):
+                
+                
+                if isPartialResult {
+                    description = description + String(accumulator) + " " + symbol + " ... "
+                }
+                else {
+                    description = description.replacingOccurrences(of: "... ", with: "") + String(accumulator) + " "
+                }
+                
                 executePendingBinaryOperation()
+                
                 pending = PendingBinaryOperationInfo(binaryFunction: function, firstOperand: accumulator)
+                
             case .Equals:
                 executePendingBinaryOperation()
+            case .ResetOperation:
+                reset()
             }
         }
     }
@@ -63,7 +84,16 @@ class CalculatorBrain {
         }
     }
     
-    private var isPartialResult = false
+    private var isPartialResult: Bool {
+        get {
+            if pending == nil{
+                return true
+            }
+            else{
+                return false
+            }
+        }
+    }
     
     private var pending: PendingBinaryOperationInfo?
     

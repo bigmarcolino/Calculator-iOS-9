@@ -18,17 +18,18 @@ class ViewController: UIViewController {
     
     private var addedPoint = false
     
+    private var brain = CalculatorBrain()
+    
     @IBAction private func touchDigit(_ sender: UIButton) {
         let digit = sender.currentTitle!
+        let textCurrentlyInDisplay = display.text!
         
         if userIsInTheMiddleOfTyping {
             if digit == "." && !addedPoint {
-                let textCurrentlyInDisplay = display.text!
                 display.text = textCurrentlyInDisplay + digit
                 addedPoint = true
             }
             else if digit != "." {
-                let textCurrentlyInDisplay = display.text!
                 display.text = textCurrentlyInDisplay + digit
             }
             
@@ -49,16 +50,14 @@ class ViewController: UIViewController {
         }
     }
     
-    private var descriptionValue: Double {
+    private var descriptionValue: String {
         get {
-            return Double(displayDescription.text!)!
+            return displayDescription.text!
         }
         set {
-            displayDescription.text = String(newValue)
+            displayDescription.text = newValue
         }
     }
-    
-    private var brain = CalculatorBrain()
     
     @IBAction private func performOperation(_ sender: UIButton) {
         if userIsInTheMiddleOfTyping {
@@ -70,6 +69,7 @@ class ViewController: UIViewController {
         if let mathematicalSymbol = sender.currentTitle {
             brain.performOperation(symbol: mathematicalSymbol)
             displayValue = brain.result
+            descriptionValue = brain.calcDescription
         }
     }
 
