@@ -17,6 +17,10 @@ class CalculatorBrain {
         accumulator = 0.0
         description = ""
         pending = nil
+        constant = ""
+        hasPendingAfterUnaryOperation = false
+        resetDescription = false
+        hasEqualsInDescription = false
     }
     
     func setOperand(operand: Double) {
@@ -33,10 +37,10 @@ class CalculatorBrain {
         "sin" : Operation.UnaryOperation(sin),
         "tan" : Operation.UnaryOperation(tan),
         "acos" : Operation.UnaryOperation(acos),
-        "×" : Operation.BinaryOperation({ $0 * $1}),
-        "÷" : Operation.BinaryOperation({ $0 / $1}),
-        "+" : Operation.BinaryOperation({ $0 + $1}),
-        "-" : Operation.BinaryOperation({ $0 - $1}),
+        "×" : Operation.BinaryOperation({ $0 * $1 }),
+        "÷" : Operation.BinaryOperation({ $0 / $1 }),
+        "+" : Operation.BinaryOperation({ $0 + $1 }),
+        "-" : Operation.BinaryOperation({ $0 - $1 }),
         "=" : Operation.Equals
     ]
     
@@ -53,16 +57,90 @@ class CalculatorBrain {
             switch operation {
             case .Constant(let value):
                 accumulator = value
+                constant = symbol
+                
             case .UnaryOperation(let function):
-                accumulator = function(accumulator)
-            case .BinaryOperation(let function):
-                
-                
                 if isPartialResult {
-                    description = description + String(accumulator) + " " + symbol + " ... "
+                    if constant != "" {
+                        description = description.replacingOccurrences(of: "... ", with: "") + symbol + "(" + constant + ") ... "
+                        constant = ""
+                    }
+                    else {
+                        description = description.replacingOccurrences(of: "... ", with: "") + symbol + "(" + String(accumulator) + ") ... "
+                    }
+                    
+                    accumulator = function(accumulator)
+                    hasPendingAfterUnaryOperation = true
                 }
                 else {
-                    description = description.replacingOccurrences(of: "... ", with: "") + String(accumulator) + " "
+                    accumulator = function(accumulator)
+                    description = symbol + "(" + description.replacingOccurrences(of: " = ", with: "") + ") = "
+                    resetDescription = true
+                }
+                
+            case .BinaryOperation(let function):
+                if isPartialResult {
+                    if constant != "" {
+                        description = description.replacingOccurrences(of: "... ", with: "") + constant + " " + symbol + " ... "
+                        constant = ""
+                    }
+                    else {
+                        description = description.replacingOccurrences(of: "... ", with: "") + String(accumulator) + " " + symbol + " ... "
+                    }
+                }
+                else {
+                    if description.range(of: "=") != nil{
+                        hasEqualsInDescription = true
+                    }
+                    
+                    if hasEqualsInDescription {
+                        description = description.replacingOccurrences(of: " =", with: "")
+                        
+                        if constant != "" {
+                            if resetDescription {
+                                description = constant + " " + symbol + " ... "
+                                resetDescription = false
+                            }
+                            else {
+                                description = description + symbol + " ... "
+                            }
+                            
+                            constant = ""
+                        }
+                        else {
+                            if resetDescription {
+                                description = String(accumulator) + " " + symbol + " ... "
+                                resetDescription = false
+                            }
+                            else {
+                                description = description + symbol + " ... "
+                            }
+                        }
+                        
+                        hasEqualsInDescription = false
+                    }
+                    else {
+                        if constant != "" {
+                            if resetDescription {
+                                description = constant + " " + symbol + " ... "
+                                resetDescription = false
+                            }
+                            else {
+                                description = description + constant + " " + symbol + " ... "
+                            }
+                            
+                            constant = ""
+                        }
+                        else {
+                            if resetDescription {
+                                description = String(accumulator) + " " + symbol + " ... "
+                                resetDescription = false
+                            }
+                            else {
+                                description = description + String(accumulator) + " " + symbol + " ... "
+                            }
+                        }
+                    }
                 }
                 
                 executePendingBinaryOperation()
@@ -70,12 +148,37 @@ class CalculatorBrain {
                 pending = PendingBinaryOperationInfo(binaryFunction: function, firstOperand: accumulator)
                 
             case .Equals:
+                if isPartialResult {
+                    if(hasPendingAfterUnaryOperation){
+                        description = description.replacingOccurrences(of: "... ", with: "").replacingOccurrences(of: " =", with: "") + " " + symbol + " "
+                        hasPendingAfterUnaryOperation = false
+                    }
+                    else {
+                        if constant != "" {
+                            description = description.replacingOccurrences(of: "... ", with: "").replacingOccurrences(of: " =", with: "") + constant + " " + symbol + " "
+                            constant = ""
+                        }
+                        else {
+                            description = description.replacingOccurrences(of: "... ", with: "").replacingOccurrences(of: " =", with: "") + String(accumulator) + " " + symbol + " "
+                        }
+                    }
+                }
+                
                 executePendingBinaryOperation()
+                
             case .ResetOperation:
                 reset()
             }
         }
     }
+    
+    private var resetDescription = false
+    
+    private var hasPendingAfterUnaryOperation = false
+    
+    private var hasEqualsInDescription = false
+    
+    private var constant = ""
     
     private func executePendingBinaryOperation(){
         if pending != nil {
@@ -86,12 +189,7 @@ class CalculatorBrain {
     
     private var isPartialResult: Bool {
         get {
-            if pending == nil{
-                return true
-            }
-            else{
-                return false
-            }
+            return pending != nil
         }
     }
     

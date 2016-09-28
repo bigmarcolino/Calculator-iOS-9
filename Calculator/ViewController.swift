@@ -39,6 +39,11 @@ class ViewController: UIViewController {
             display.text = digit
             userIsInTheMiddleOfTyping = true
         }
+        else if digit == "." && !addedPoint {
+            display.text = "0" + digit
+            userIsInTheMiddleOfTyping = true
+            addedPoint = true
+        }
     }
     
     private var displayValue: Double {
