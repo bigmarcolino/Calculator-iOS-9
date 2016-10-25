@@ -9,47 +9,81 @@
 import Foundation
 
 class CalculatorBrain {
-    private var accumulator = 0.0
-    private var internalProgram = [AnyObject]()
-    private var description = ""
+    private var isPartialResult: Bool {
+        get {
+            return pending != nil
+        }
+    }
     
-    private func reset() {
-        accumulator = 0.0
-        description = ""
+    private var resultAccumulator = 0.0
+    
+    private var internalProgram = [AnyObject]()
+    
+    var variableValues = [String:Double]()
+    
+    var description: String {
+        get {
+            if pending == nil {
+                return descriptionAccumulator
+            } else {
+                return pending!.descriptionFunction(pending!.descriptionOperand, pending!.descriptionOperand != descriptionAccumulator ? descriptionAccumulator : "")
+            }
+        }
+    }
+    
+    private var descriptionAccumulator = "0" {
+        didSet {
+            if pending == nil {
+                currentPrecedence = Precedence.Max
+            }
+        }
+    }
+    
+    private var currentPrecedence = Precedence.Max
+    
+    func clear() {
         pending = nil
-        constant = ""
-        hasPendingAfterUnaryOperation = false
-        resetDescription = false
-        hasEqualsInDescription = false
+        resultAccumulator = 0.0
+        descriptionAccumulator = "0"
+        internalProgram.removeAll()
     }
     
     func setOperand(operand: Double) {
-        accumulator = operand
+        resultAccumulator = operand
+        descriptionAccumulator = String(format:"%g", operand)
         internalProgram.append(operand as AnyObject)
+    }
+    
+    func setOperand(variableName: String) {
+        variableValues[variableName] = variableValues[variableName] ?? 0.0
+        resultAccumulator = variableValues[variableName]!
+        descriptionAccumulator = variableName
+        internalProgram.append(variableName as AnyObject)
+    }
+    
+    private enum Precedence: Int {
+        case Min = 0, Max
     }
     
     private var operations: Dictionary<String,Operation> = [
         "π" : Operation.Constant(M_PI),
         "e" : Operation.Constant(M_E),
-        "±" : Operation.UnaryOperation({ -$0 }),
-        "C" : Operation.ResetOperation,
-        "√" : Operation.UnaryOperation(sqrt),
-        "cos" : Operation.UnaryOperation(cos),
-        "sin" : Operation.UnaryOperation(sin),
-        "tan" : Operation.UnaryOperation(tan),
-        "acos" : Operation.UnaryOperation(acos),
-        "×" : Operation.BinaryOperation({ $0 * $1 }),
-        "÷" : Operation.BinaryOperation({ $0 / $1 }),
-        "+" : Operation.BinaryOperation({ $0 + $1 }),
-        "-" : Operation.BinaryOperation({ $0 - $1 }),
+        "±" : Operation.UnaryOperation({ -$0 }, { "-(\($0))"}),
+        "√" : Operation.UnaryOperation(sqrt, { "√(\($0))"}),
+        "cos" : Operation.UnaryOperation(cos, { "cos(\($0))"}),
+        "sin" : Operation.UnaryOperation(sin, { "sin(\($0))"}),
+        "tan" : Operation.UnaryOperation(tan, { "tan(\($0))"}),
+        "×" : Operation.BinaryOperation({ $0 * $1 }, { "\($0) × \($1)"}, Precedence.Max),
+        "÷" : Operation.BinaryOperation({ $0 / $1 }, { "\($0) ÷ \($1)"}, Precedence.Max),
+        "+" : Operation.BinaryOperation({ $0 + $1 }, { "\($0) + \($1)"}, Precedence.Min),
+        "−" : Operation.BinaryOperation({ $0 - $1 }, { "\($0) - \($1)"}, Precedence.Min),
         "=" : Operation.Equals
     ]
     
     private enum Operation {
         case Constant(Double)
-        case UnaryOperation((Double) -> Double)
-        case BinaryOperation((Double, Double) -> Double)
-        case ResetOperation
+        case UnaryOperation((Double) -> Double, (String) -> String)
+        case BinaryOperation((Double, Double) -> Double, (String, String) -> String, Precedence)
         case Equals
     }
     
@@ -58,141 +92,45 @@ class CalculatorBrain {
         
         if let operation = operations[symbol] {
             switch operation {
+                
             case .Constant(let value):
-                accumulator = value
-                constant = symbol
+                resultAccumulator = value
+                descriptionAccumulator = symbol
                 
-            case .UnaryOperation(let function):
-                if isPartialResult {
-                    if constant != "" {
-                        description = description.replacingOccurrences(of: "... ", with: "") + symbol + "(" + constant + ") ... "
-                        constant = ""
-                    }
-                    else {
-                        description = description.replacingOccurrences(of: "... ", with: "") + symbol + "(" + String(accumulator) + ") ... "
-                    }
-                    
-                    accumulator = function(accumulator)
-                    hasPendingAfterUnaryOperation = true
-                }
-                else {
-                    accumulator = function(accumulator)
-                    description = symbol + "(" + description.replacingOccurrences(of: " = ", with: "") + ") = "
-                    resetDescription = true
-                }
+            case .UnaryOperation(let resultFunction, let descriptionFunction):
+                resultAccumulator = resultFunction(resultAccumulator)
+                descriptionAccumulator = descriptionFunction(descriptionAccumulator)
                 
-            case .BinaryOperation(let function):
-                if isPartialResult {
-                    if constant != "" {
-                        description = description.replacingOccurrences(of: "... ", with: "") + constant + " " + symbol + " ... "
-                        constant = ""
-                    }
-                    else {
-                        description = description.replacingOccurrences(of: "... ", with: "") + String(accumulator) + " " + symbol + " ... "
-                    }
-                }
-                else {
-                    if description.range(of: "=") != nil{
-                        hasEqualsInDescription = true
-                    }
-                    
-                    if hasEqualsInDescription {
-                        description = description.replacingOccurrences(of: " =", with: "")
-                        
-                        if constant != "" {
-                            if resetDescription {
-                                description = constant + " " + symbol + " ... "
-                                resetDescription = false
-                            }
-                            else {
-                                description = description + symbol + " ... "
-                            }
-                            
-                            constant = ""
-                        }
-                        else {
-                            if resetDescription {
-                                description = String(accumulator) + " " + symbol + " ... "
-                                resetDescription = false
-                            }
-                            else {
-                                description = description + symbol + " ... "
-                            }
-                        }
-                        
-                        hasEqualsInDescription = false
-                    }
-                    else {
-                        if constant != "" {
-                            if resetDescription {
-                                description = constant + " " + symbol + " ... "
-                                resetDescription = false
-                            }
-                            else {
-                                description = description + constant + " " + symbol + " ... "
-                            }
-                            
-                            constant = ""
-                        }
-                        else {
-                            if resetDescription {
-                                description = String(accumulator) + " " + symbol + " ... "
-                                resetDescription = false
-                            }
-                            else {
-                                description = description + String(accumulator) + " " + symbol + " ... "
-                            }
-                        }
-                    }
-                }
-                
+            case .BinaryOperation(let resultFunction, let descriptionFunction, let precedence):
                 executePendingBinaryOperation()
-                
-                pending = PendingBinaryOperationInfo(binaryFunction: function, firstOperand: accumulator)
+                if currentPrecedence.rawValue < precedence.rawValue {
+                    descriptionAccumulator = "(\(descriptionAccumulator))"
+                }
+                currentPrecedence = precedence
+                pending = PendingBinaryOperationInfo(binaryFunction: resultFunction, firstOperand: resultAccumulator,
+                                                     descriptionFunction: descriptionFunction, descriptionOperand: descriptionAccumulator)
                 
             case .Equals:
-                if isPartialResult {
-                    if(hasPendingAfterUnaryOperation){
-                        description = description.replacingOccurrences(of: "... ", with: "").replacingOccurrences(of: " =", with: "") + " " + symbol + " "
-                        hasPendingAfterUnaryOperation = false
-                    }
-                    else {
-                        if constant != "" {
-                            description = description.replacingOccurrences(of: "... ", with: "").replacingOccurrences(of: " =", with: "") + constant + " " + symbol + " "
-                            constant = ""
-                        }
-                        else {
-                            description = description.replacingOccurrences(of: "... ", with: "").replacingOccurrences(of: " =", with: "") + String(accumulator) + " " + symbol + " "
-                        }
-                    }
-                }
-                
                 executePendingBinaryOperation()
-                
-            case .ResetOperation:
-                reset()
             }
         }
     }
     
-    private var resetDescription = false
-    
-    private var hasPendingAfterUnaryOperation = false
-    
-    private var hasEqualsInDescription = false
-    
-    private var constant = ""
-    
-    private func executePendingBinaryOperation(){
-        if pending != nil {
-            accumulator = pending!.binaryFunction(pending!.firstOperand, accumulator)
-            pending = nil
+    func undo() {
+        if !internalProgram.isEmpty {
+            internalProgram.removeLast()
+            program = internalProgram as CalculatorBrain.PropertyList
+        } else {
+            clear()
+            descriptionAccumulator = ""
         }
     }
     
-    private var isPartialResult: Bool {
-        get {
-            return pending != nil
+    private func executePendingBinaryOperation() {
+        if pending != nil {
+            resultAccumulator = pending!.binaryFunction(pending!.firstOperand, resultAccumulator)
+            descriptionAccumulator = pending!.descriptionFunction(pending!.descriptionOperand, descriptionAccumulator)
+            pending = nil
         }
     }
     
@@ -201,6 +139,14 @@ class CalculatorBrain {
     private struct PendingBinaryOperationInfo {
         var binaryFunction: (Double, Double) -> Double
         var firstOperand: Double
+        var descriptionFunction: (String, String) -> String
+        var descriptionOperand: String
+    }
+    
+    var result: Double {
+        get {
+            return resultAccumulator
+        }
     }
     
     typealias PropertyList = AnyObject
@@ -211,33 +157,25 @@ class CalculatorBrain {
         }
         set {
             clear()
+            
             if let arrayOfOps = newValue as? [AnyObject] {
                 for op in arrayOfOps {
                     if let operand = op as? Double {
                         setOperand(operand: operand)
-                    } else if let operation = op as? String {
-                        performOperation(symbol: operation)
+                    } else if let variableName = op as? String {
+                        if variableValues[variableName] != nil {
+                            setOperand(variableName: variableName)
+                        } else if let operation = op as? String {
+                            performOperation(symbol: operation)
+                        }
                     }
                 }
             }
         }
     }
     
-    func clear() {
-        accumulator = 0.0
-        pending = nil
-        internalProgram.removeAll()
-    }
-    
-    var calcDescription: String {
-        get {
-            return description
-        }
-    }
-    
-    var result: Double {
-        get {
-            return accumulator
-        }
+    func getDescription() -> String {
+        let whitespace = (description.hasSuffix(" ") ? "" : " ")
+        return isPartialResult ? (description + whitespace  + "...") : (description + whitespace  + "=")
     }
 }

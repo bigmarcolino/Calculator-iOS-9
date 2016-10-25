@@ -8,22 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		4C0D5DB41D902A1500A299C2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0D5DB31D902A1500A299C2 /* AppDelegate.swift */; };
-		4C0D5DB61D902A1500A299C2 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0D5DB51D902A1500A299C2 /* ViewController.swift */; };
+		4C0D5DB61D902A1500A299C2 /* CalculatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0D5DB51D902A1500A299C2 /* CalculatorViewController.swift */; };
 		4C0D5DB91D902A1500A299C2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4C0D5DB71D902A1500A299C2 /* Main.storyboard */; };
 		4C0D5DBB1D902A1500A299C2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4C0D5DBA1D902A1500A299C2 /* Assets.xcassets */; };
 		4C0D5DBE1D902A1500A299C2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4C0D5DBC1D902A1500A299C2 /* LaunchScreen.storyboard */; };
 		4C1921751D9ABF23003C9E7E /* CalculatorBrain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C1921741D9ABF23003C9E7E /* CalculatorBrain.swift */; };
+		4C634F3D1DB841C100D7258B /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C634F3C1DB841C100D7258B /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		4C0D5DB01D902A1500A299C2 /* Calculator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Calculator.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C0D5DB31D902A1500A299C2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		4C0D5DB51D902A1500A299C2 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		4C0D5DB51D902A1500A299C2 /* CalculatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalculatorViewController.swift; sourceTree = "<group>"; };
 		4C0D5DB81D902A1500A299C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		4C0D5DBA1D902A1500A299C2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4C0D5DBD1D902A1500A299C2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4C0D5DBF1D902A1500A299C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4C1921741D9ABF23003C9E7E /* CalculatorBrain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalculatorBrain.swift; sourceTree = "<group>"; };
+		4C634F3C1DB841C100D7258B /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Constants.swift; path = ../Constants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,7 +58,8 @@
 		4C0D5DB21D902A1500A299C2 /* Calculator */ = {
 			isa = PBXGroup;
 			children = (
-				4C0D5DB51D902A1500A299C2 /* ViewController.swift */,
+				4C634F3C1DB841C100D7258B /* Constants.swift */,
+				4C0D5DB51D902A1500A299C2 /* CalculatorViewController.swift */,
 				4C0D5DB71D902A1500A299C2 /* Main.storyboard */,
 				4C1921741D9ABF23003C9E7E /* CalculatorBrain.swift */,
 				4C0D5DC51D902BAB00A299C2 /* Supporting Files */,
@@ -149,8 +152,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C1921751D9ABF23003C9E7E /* CalculatorBrain.swift in Sources */,
-				4C0D5DB61D902A1500A299C2 /* ViewController.swift in Sources */,
+				4C0D5DB61D902A1500A299C2 /* CalculatorViewController.swift in Sources */,
 				4C0D5DB41D902A1500A299C2 /* AppDelegate.swift in Sources */,
+				4C634F3D1DB841C100D7258B /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
