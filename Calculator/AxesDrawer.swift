@@ -67,7 +67,7 @@ class AxesDrawer {
             }
             
             let bboxSize = pointsPerHashmark * startingHashmarkRadius * 2
-            let bbox = CGRect(origin: origin, size: CGSize(width: bboxSize, height: bboxSize))
+            var bbox = CGRect(origin: origin, size: CGSize(width: bboxSize, height: bboxSize))
             
             let formatter = NumberFormatter()
             formatter.maximumFractionDigits = Int(-log10(Double(unitsPerHashmark)))
@@ -92,13 +92,14 @@ class AxesDrawer {
                     drawHashmarkAtLocation(location: bottomHashmarkPoint, .Left("-\(label)"))
                 }
                 
-                bbox.insetBy(dx: -pointsPerHashmark, dy: -pointsPerHashmark)
+                bbox = bbox.insetBy(dx: -pointsPerHashmark, dy: -pointsPerHashmark)
             }
         }
     }
     
     private func drawHashmarkAtLocation(location: CGPoint, _ text: AnchoredText) {
         var dx: CGFloat = 0, dy: CGFloat = 0
+ 
         switch text {
         case .Left: dx = Constants.HashmarkSize / 2
         case .Right: dx = Constants.HashmarkSize / 2
@@ -128,13 +129,16 @@ class AxesDrawer {
                 NSFontAttributeName : UIFont.preferredFont(forTextStyle: UIFontTextStyle.footnote),
                 NSForegroundColorAttributeName : color
             ]
+            
             var textRect = CGRect(origin: location, size: text.size(attributes: attributes))
+            
             switch self {
             case .Top: textRect.origin.y += textRect.size.height / 2 + AnchoredText.VerticalOffset
             case .Left: textRect.origin.x += textRect.size.width / 2 + AnchoredText.HorizontalOffset
             case .Bottom: textRect.origin.y -= textRect.size.height / 2 + AnchoredText.VerticalOffset
             case .Right: textRect.origin.x -= textRect.size.width / 2 + AnchoredText.HorizontalOffset
             }
+            
             text.draw(in: textRect, withAttributes: attributes)
         }
         
