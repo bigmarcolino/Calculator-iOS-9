@@ -13,4 +13,13 @@ struct Constants {
         static let numberOfDigitsAfterDecimalPoint = 6
         static let variableName = "M"
     }
+    
+    struct Drawing {
+        static let pointsPerUnit = 40.0
+    }
+    
+    struct Error {
+        static let data = "Calculadora: fonte de dados não encontrada"
+        static let partialResult = "Calculadora: tentando desenhar um resultado parcial"
+    }
 }

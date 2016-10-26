@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11201" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="sv2-rN-tEd">
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
@@ -265,11 +265,11 @@
                                                     </button>
                                                 </subviews>
                                             </stackView>
-                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="rSs-pr-EoA">
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="Oto-gS-MsB">
                                                 <subviews>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AGd-DE-XSi">
                                                         <color key="backgroundColor" red="0.80000001190000003" green="0.80000001190000003" blue="0.80000001190000003" alpha="1" colorSpace="calibratedRGB"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                                         <state key="normal" title="save"/>
                                                         <connections>
                                                             <action selector="save" destination="BYZ-38-t0r" eventType="touchUpInside" id="3vT-mT-dze"/>
@@ -277,7 +277,7 @@
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Coi-DL-GMS">
                                                         <color key="backgroundColor" red="0.80000001190000003" green="0.80000001190000003" blue="0.80000001190000003" alpha="1" colorSpace="calibratedRGB"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                                         <state key="normal" title="restore"/>
                                                         <connections>
                                                             <action selector="restore" destination="BYZ-38-t0r" eventType="touchUpInside" id="i4f-Se-IBh"/>
@@ -285,7 +285,7 @@
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6da-ma-HyA">
                                                         <color key="backgroundColor" red="0.80000001190000003" green="0.80000001190000003" blue="0.80000001190000003" alpha="1" colorSpace="calibratedRGB"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                                         <state key="normal" title="M"/>
                                                         <connections>
                                                             <action selector="getVariable:" destination="BYZ-38-t0r" eventType="touchUpInside" id="MZj-6g-kcY"/>
@@ -293,10 +293,18 @@
                                                     </button>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9cv-vq-o7c">
                                                         <color key="backgroundColor" red="0.80000001190000003" green="0.80000001190000003" blue="0.80000001190000003" alpha="1" colorSpace="calibratedRGB"/>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                                         <state key="normal" title="→M"/>
                                                         <connections>
                                                             <action selector="setVariable:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Jiu-hS-ohI"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9br-eC-5jp">
+                                                        <color key="backgroundColor" red="0.80000001190000003" green="0.80000001190000003" blue="0.80000001190000003" alpha="1" colorSpace="calibratedRGB"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                        <state key="normal" title="plot"/>
+                                                        <connections>
+                                                            <segue destination="Fno-Ij-BWN" kind="showDetail" identifier="Show Graph" id="lb9-eY-qe4"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>
@@ -314,14 +322,87 @@
                             <constraint firstAttribute="leadingMargin" secondItem="5XH-y5-4hM" secondAttribute="leading" id="XPV-pE-Ffy"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="xRs-Wa-NZR"/>
                     <connections>
                         <outlet property="descriptionLabel" destination="6Km-qX-tAA" id="1eg-Lm-b7h"/>
                         <outlet property="display" destination="FQe-Iz-yRS" id="EkL-rb-uAH"/>
+                        <outlet property="graphButton" destination="9br-eC-5jp" id="WU4-Mv-vZT"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-143.19999999999999" y="355.7721139430285"/>
+            <point key="canvasLocation" x="1071.2" y="-109.29535232383809"/>
+        </scene>
+        <!--Split View Controller-->
+        <scene sceneID="FU3-g6-XPH">
+            <objects>
+                <splitViewController id="sv2-rN-tEd" sceneMemberID="viewController">
+                    <connections>
+                        <segue destination="roc-ve-9N6" kind="relationship" relationship="masterViewController" id="lij-Gb-RYq"/>
+                        <segue destination="Fno-Ij-BWN" kind="relationship" relationship="detailViewController" id="mEm-os-gTK"/>
+                    </connections>
+                </splitViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dbK-cw-Tor" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1300" y="150"/>
+        </scene>
+        <!--Graph View Controller-->
+        <scene sceneID="60I-2R-fiP">
+            <objects>
+                <viewController id="GyK-9q-T53" customClass="GraphViewController" customModule="Calculator" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="cvr-dG-9PH"/>
+                        <viewControllerLayoutGuide type="bottom" id="klE-VL-aoK"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="nei-ZG-JWX" customClass="GraphView" customModule="Calculator" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="qgC-tP-lHR"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Kst-xi-aOy" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1071.2" y="622.93853073463276"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="PYl-0D-eVT">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="roc-ve-9N6" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="gO6-kN-exL">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="M2T-Gf-X61"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZXs-vH-bhw" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="132" y="-109.29535232383809"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="ZkF-K6-asQ">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Fno-Ij-BWN" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Yh3-IQ-MJU">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="GyK-9q-T53" kind="relationship" relationship="rootViewController" id="5Cv-oM-yrR"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2AQ-aT-YPM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="132" y="622.93853073463276"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="lb9-eY-qe4"/>
+    </inferredMetricsTieBreakers>
 </document>

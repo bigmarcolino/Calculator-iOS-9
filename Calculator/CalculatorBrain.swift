@@ -9,7 +9,7 @@
 import Foundation
 
 class CalculatorBrain {
-    private var isPartialResult: Bool {
+    var isPartialResult: Bool {
         get {
             return pending != nil
         }

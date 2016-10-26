@@ -10,8 +10,8 @@ import UIKit
 
 class CalculatorViewController: UIViewController {
     @IBOutlet private weak var display: UILabel!
-    
     @IBOutlet weak var descriptionLabel: UILabel!
+    @IBOutlet weak var graphButton: UIButton!
     
     private var userIsInTheMiddleOfTyping = false
     
@@ -64,6 +64,7 @@ class CalculatorViewController: UIViewController {
     private func updateUI() {
         descriptionLabel.text = (brain.description.isEmpty ? " " : brain.getDescription())
         displayValue = brain.result
+        graphButton.isEnabled = !brain.isPartialResult
     }
     
     var savedProgram: CalculatorBrain.PropertyList?
@@ -138,4 +139,31 @@ class CalculatorViewController: UIViewController {
         
         display.text = number
     }
-}
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let identifier = segue.identifier {
+            switch identifier {
+            case "plot":
+                guard !brain.isPartialResult else {
+                    NSLog(Constants.Error.partialResult)
+                    return
+                }
+                
+                var destinationVC = segue.destination
+                if let nvc = destinationVC as? UINavigationController {
+                    destinationVC = nvc.visibleViewController ?? destinationVC
+                }
+                
+                if let vc = destinationVC as? GraphViewController {
+                    vc.navigationItem.title = brain.description
+                    vc.function = {
+                        (x: CGFloat) -> Double in
+                        self.brain.variableValues[Constants.Math.variableName] = Double(x)
+                        self.brain.program = self.brain.program
+                        return self.brain.result
+                    }
+                }
+            default: break
+            }
+        }
+    }}
