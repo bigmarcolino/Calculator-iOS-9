@@ -13,14 +13,18 @@ class GraphViewController: UIViewController, GraphViewDataSource {
         didSet {
             graphView.dataSource = self
             
-            graphView.addGestureRecognizer(UIPinchGestureRecognizer(target: graphView, action: #selector(graphView.zoom)))
-
-            graphView.addGestureRecognizer(UIPanGestureRecognizer(target: graphView, action: #selector(graphView.move)))
-
-            let recognizer = UITapGestureRecognizer(target: graphView, action: #selector(graphView.doubleTap))
+            // Since we don't need to update the model after recognizing gestures, target is the outlet itself (not view controller)
             
-            recognizer.numberOfTapsRequired = 2
+            // a. Pinching (zooms the entire graph, including the axes, in or out on the graph)
+            graphView.addGestureRecognizer(UIPinchGestureRecognizer(target: graphView, action: #selector(graphView.zoom(_:))))
             
+            
+            // b. Panning (moves the entire graph, including the axes, to follow the touch around)
+            graphView.addGestureRecognizer(UIPanGestureRecognizer(target: graphView, action: #selector(graphView.move(_:))))
+            
+            // c. Double-tapping (moves the origin of the graph to the point of the double tap)
+            let recognizer = UITapGestureRecognizer(target: graphView, action: #selector(graphView.doubleTap(_:)))
+            recognizer.numberOfTapsRequired = 2 // single tap, double tap, etc.
             graphView.addGestureRecognizer(recognizer)
         }
     }
@@ -29,11 +33,10 @@ class GraphViewController: UIViewController, GraphViewDataSource {
         return navigationController?.view.bounds ?? view.bounds
     }
     
-    func getYCoordinate(x: CGFloat) -> CGFloat? {
+    func getYCoordinate(_ x: CGFloat) -> CGFloat? {
         if let function = function {
             return CGFloat(function(x))
         }
-        
         return nil
     }
     

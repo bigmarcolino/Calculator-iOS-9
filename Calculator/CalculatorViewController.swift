@@ -159,6 +159,7 @@ class CalculatorViewController: UIViewController {
                     vc.function = {
                         (x: CGFloat) -> Double in
                         self.brain.variableValues[Constants.Math.variableName] = Double(x)
+                        // Trick with a computed property
                         self.brain.program = self.brain.program
                         return self.brain.result
                     }
@@ -166,4 +167,5 @@ class CalculatorViewController: UIViewController {
             default: break
             }
         }
-    }}
+    }   
+}
