@@ -5,4 +5,5 @@ Programming Project 3 for the [iOS 9 course](https://itunes.apple.com/us/course/
 
 ## Getting Started
 
-Open this project in Xcode and run it
+* Open the project in Xcode   
+* Run it
