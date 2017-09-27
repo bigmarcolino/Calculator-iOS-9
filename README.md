@@ -3,7 +3,7 @@ Project developed for the Special Topics in Computer Graphics (MAB001) class at 
 
 Programming Project 3 for the [iOS 9 course](https://itunes.apple.com/us/course/developing-ios-9-apps-with-swift/id1104579961) from Stanford University
 
-## Getting Started
+## How to Run
 
 * Open the project in Xcode   
 * Run it
